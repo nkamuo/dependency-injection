@@ -1,0 +1,30 @@
+{
+  "name": "dependency-injection",
+  "version": "1.0.0",
+  "description": "Dependency Injection for Javascript",
+  "main": "src/main.ts",
+  "scripts": {
+    "test": "npx tsc && node dist/test/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nkamuo/dependency-injection.git"
+  },
+  "keywords": [
+    "di",
+    "js"
+  ],
+  "author": "Callistus Nkamuo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nkamuo/dependency-injection/issues"
+  },
+  "homepage": "https://github.com/nkamuo/dependency-injection#readme",
+  "dependencies": {
+    "locutus": "^2.0.16",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/locutus": "^0.0.8"
+  }
+}
