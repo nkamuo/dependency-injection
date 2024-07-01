@@ -941,6 +941,19 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
         return this.aliasDefinitions[id];
     }
 
+      /**
+     * Registers a service definition. alias for register
+     *
+     * This methods allows for simple registration of service definition
+     * with a fluid interface.
+     *
+     * @return Definition
+     */
+      public  bind<T>(id: string, serviceClass?: any)
+      {
+        return this.register<T>(id, serviceClass);
+      }
+
     /**
      * Registers a service definition.
      *
@@ -951,7 +964,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      */
     public  register<T>(id: string, serviceClass?: any)
     {
-        return this.setDefinition(id, new Definition(serviceClass));
+        return this.setDefinition(id, new Definition<T>(serviceClass));
     }
 
     /**

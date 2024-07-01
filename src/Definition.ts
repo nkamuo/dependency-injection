@@ -2,7 +2,7 @@ import { BoundArgument } from './Argument/BoundArgument';
 import { InvalidArgumentException, InvalidServiceBehavior, RuntimeException } from './Container';
 import { Reference } from './Reference';
 
-export class Definition
+export class Definition<T = any>
 {
     /**
      * @internal
