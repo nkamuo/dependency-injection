@@ -30,7 +30,7 @@ export interface ContainerInterface {
      * @param key
      * @throws RuntimeError
      */
-    get(key: string): any;
+    get<T = any>(key: string): T;
 
 }
 
@@ -227,7 +227,7 @@ export class Container implements ContainerInterface//, ResetInterface
      *
      * @see Reference
      */
-    public  get(id: string, invalidBehavior = InvalidServiceBehavior.EXCEPTION_ON_INVALID_REFERENCE)
+    public  get<T=any>(id: string, invalidBehavior = InvalidServiceBehavior.EXCEPTION_ON_INVALID_REFERENCE): T
     {
         return this.services[id]
             ?? this.services[id = this.aliases[id] ?? id]

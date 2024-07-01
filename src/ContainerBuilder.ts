@@ -535,7 +535,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @see Reference
      */
-    public  get(id: string, invalidBehavior = InvalidServiceBehavior.EXCEPTION_ON_INVALID_REFERENCE)
+    public  get<T = any>(id: string, invalidBehavior = InvalidServiceBehavior.EXCEPTION_ON_INVALID_REFERENCE): T
     {
 
         if (this.isCompiled() && (id in this.removedIds) /* ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE >= invalidBehavior */) {
@@ -547,7 +547,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
 
 
 
-    private doGet(id: string, invalidBehavior = InvalidServiceBehavior.EXCEPTION_ON_INVALID_REFERENCE, inlineServices: {[i: string]: any} = {},isConstructorArgument = false): any
+    private doGet<T = any>(id: string, invalidBehavior = InvalidServiceBehavior.EXCEPTION_ON_INVALID_REFERENCE, inlineServices: {[i: string]: any} = {},isConstructorArgument = false): T
     {
         var definition: Definition;
         var service: any;
@@ -588,9 +588,9 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
             definition = this.getDefinition(id);
         } catch (e) {
             //ServiceNotFoundException
-            if (InvalidServiceBehavior.EXCEPTION_ON_INVALID_REFERENCE.valueOf() < invalidBehavior.valueOf()) {
-                return null;
-            }
+            // if (InvalidServiceBehavior.EXCEPTION_ON_INVALID_REFERENCE.valueOf() < invalidBehavior.valueOf()) {
+            //     return null;
+            // }
 
             throw e;
         }
