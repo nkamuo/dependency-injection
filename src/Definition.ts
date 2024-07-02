@@ -36,7 +36,7 @@ export class Definition<T = any>
     private autoconfigured = false;
     private configurator: any;
     private tags: {[l:string]: any[]} = {};
-    private is_public = false;
+    private is_public = true;
     private synthetic = false;
     private is_abstract = false;
     private lazy = false;
@@ -101,6 +101,10 @@ export class Definition<T = any>
          this.factory = factory;
  
          return this;
+     }
+     
+     public withFactory(factory: ((...args: any[]) => any)|string|Array<Reference|string>|Reference|null){
+        return this.setFactory(factory);
      }
  
      /**
@@ -611,6 +615,20 @@ export class Definition<T = any>
 
         return this;
     }
+
+     /**
+     * Sets the visibility of this service.
+     *
+     * @return this
+     */
+     public  private(is_private = true)
+     {
+         this.changes['public'] = !is_private;
+ 
+         this.is_public = !is_private;
+ 
+         return this;
+     }
 
     /**
      * Whether this service is public facing.
