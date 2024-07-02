@@ -36,7 +36,7 @@ export class Definition<T = any>
     private autoconfigured = false;
     private configurator: any;
     private tags: {[l:string]: any[]} = {};
-    private is_public = true;
+    private is_public = false;
     private synthetic = false;
     private is_abstract = false;
     private lazy = false;
@@ -615,6 +615,16 @@ export class Definition<T = any>
 
         return this;
     }
+
+     /**
+     * Sets the visibility of this service.
+     *
+     * @return this
+     */
+     public  public(is_public = true)
+     {
+        this.setPublic(is_public);
+     }
 
      /**
      * Sets the visibility of this service.
