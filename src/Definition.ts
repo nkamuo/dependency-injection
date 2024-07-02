@@ -611,34 +611,11 @@ export class Definition<T = any>
     {
         this.changes['public'] = true;
 
-        this.is_public = is_public;
+        this.is_public = is_public?? true;
 
         return this;
     }
 
-     /**
-     * Sets the visibility of this service.
-     *
-     * @return this
-     */
-     public  public(is_public = true)
-     {
-        this.setPublic(is_public);
-     }
-
-     /**
-     * Sets the visibility of this service.
-     *
-     * @return this
-     */
-     public  private(is_private = true)
-     {
-         this.changes['public'] = !is_private;
- 
-         this.is_public = !is_private;
- 
-         return this;
-     }
 
     /**
      * Whether this service is public facing.
@@ -657,7 +634,7 @@ export class Definition<T = any>
      *
      * @deprecated since Symfony 5.2, use setPublic() instead
      */
-    public  setPrivate(is_private: boolean)
+    public  setPrivate(is_private: boolean = true)
     {
         // trigger_deprecation('symfony/dependency-injection', '5.2', 'The "%s()" method is deprecated, use "setPublic()" instead.', __METHOD__);
 
