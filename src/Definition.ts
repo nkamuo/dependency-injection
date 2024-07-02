@@ -607,7 +607,7 @@ export class Definition<T = any>
      *
      * @return this
      */
-    public  setPublic(is_public: boolean)
+    public  setPublic(is_public = true)
     {
         this.changes['public'] = true;
 
