@@ -22,13 +22,13 @@ import { Reference } from './Reference';
 import { TypedReference } from './TypedReference';
 import sprintf from 'locutus/php/strings/sprintf';
 
-class ServiceNotFoundException extends Error{
-    constructor(id: string){
-        super(sprintf("Service with id or alias \"%s\" was not found",id));
+class ServiceNotFoundException extends Error {
+    constructor(id: string) {
+        super(sprintf("Service with id or alias \"%s\" was not found", id));
     }
 }
-class ServiceCircularReferenceException extends Error{
-    constructor(message: string, seen: any[]){
+class ServiceCircularReferenceException extends Error {
+    constructor(message: string, seen: any[]) {
         super(message);
     }
 }
@@ -38,32 +38,32 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
     /**
      * @var array<string, ExtensionInterface>
      */
-    private extensions: {[i:string]: Extension} = {};
+    private extensions: { [i: string]: Extension } = {};
 
     /**
      * @var array<string, ExtensionInterface>
      */
-    private extensionsByNs: {[i:string]: any} = {};
+    private extensionsByNs: { [i: string]: any } = {};
 
     /**
      * @var array<string, Definition>
      */
-    private definitions: {[i:string]: Definition} = {};
+    private definitions: { [i: string]: Definition } = {};
 
     /**
      * @var array<string, Alias>
      */
-    private aliasDefinitions: {[i:string]: Alias} = {};
+    private aliasDefinitions: { [i: string]: Alias } = {};
 
     /**
      * @var array<string, ResourceInterface>
      */
-    private resources: {[i:string]: any} = {};
+    private resources: { [i: string]: any } = {};
 
     /**
      * @var array<string, array<array<string, mixed>>>
      */
-    private extensionConfigs: {[i:string]: {[i:string]: any}[]} = {};
+    private extensionConfigs: { [i: string]: { [i: string]: any }[] } = {};
 
     /**
      * @var Compiler
@@ -88,7 +88,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
     /**
      * @var ExpressionFunctionProviderInterface[]
      */
-    private expressionLanguageProviders: {[i:string]: any} = {};
+    private expressionLanguageProviders: { [i: string]: any } = {};
 
     /**
      * @var string[] with tag names used by findTaggedServiceIds
@@ -98,12 +98,12 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
     /**
      * @var string[][] a map of env var names to their placeholders
      */
-    private envPlaceholders: {[i:string]: any} = {};
+    private envPlaceholders: { [i: string]: any } = {};
 
     /**
      * @var int[] a map of env vars to their resolution counter
      */
-    private envCounters: {[i:string]: any} = {};
+    private envCounters: { [i: string]: any } = {};
 
     /**
      * @var string[] the list of vendor directories
@@ -113,17 +113,17 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
     /**
      * @var array<string, ChildDefinition>
      */
-    private autoconfiguredInstanceof: {[i:string]: any} = {};
+    private autoconfiguredInstanceof: { [i: string]: any } = {};
 
     /**
      * @var array<string, callable>
      */
-    private autoconfiguredAttributes: {[i:string]: any} = {};
+    private autoconfiguredAttributes: { [i: string]: any } = {};
 
     /**
      * @var array<string, bool>
      */
-    private removedIds: {[i: string]: boolean} = {};
+    private removedIds: { [i: string]: boolean } = {};
 
     /**
      * @var array<int, boolean>
@@ -131,21 +131,20 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
     private removedBindingIds: boolean[] = [];
 
     private static readonly INTERNAL_TYPES = {
-        'int' : true,
-        'float' : true,
-        'string' : true,
-        'bool' : true,
-        'resource' : true,
-        'object' : true,
-        'array' : true,
-        'null' : true,
-        'callable' : true,
-        'iterable' : true,
-        'mixed' : true,
+        'int': true,
+        'float': true,
+        'string': true,
+        'bool': true,
+        'resource': true,
+        'object': true,
+        'array': true,
+        'null': true,
+        'callable': true,
+        'iterable': true,
+        'mixed': true,
     };
 
-    public  constructor(parameterBag: ParameterBag<any> = <ParameterBag<any>><any>null)
-    {
+    public constructor(parameterBag: ParameterBag<any> = <ParameterBag<any>><any>null) {
         super(parameterBag);
 
         const deprecationMessage = "Depication %alias_id% Message";
@@ -167,8 +166,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      * If you are not using the loaders and therefore don't want
      * to depend on the Config component, set this flag to false.
      */
-    public  setResourceTracking(track: boolean)
-    {
+    public setResourceTracking(track: boolean) {
         this.trackResources = track;
     }
 
@@ -177,8 +175,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return bool
      */
-    public  isTrackingResources()
-    {
+    public isTrackingResources() {
         return this.trackResources;
     }
 
@@ -190,9 +187,8 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
     //     this.proxyInstantiator = proxyInstantiator;
     // }
 
-    public  registerExtension(extension: Extension)
-    {
-        if(extension.getAlias() in this.extensions)
+    public registerExtension(extension: Extension) {
+        if (extension.getAlias() in this.extensions)
             throw new Error(`Registering Extension with the alias "${extension.getAlias()} more than"`);
 
 
@@ -210,8 +206,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @throws LogicException if the extension is not registered
      */
-    public  getExtension(name: string)
-    {
+    public getExtension(name: string) {
         if ((name in this.extensions)) {
             return this.extensions[name];
         }
@@ -228,8 +223,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return array<string, Extension>
      */
-    public  getExtensions()
-    {
+    public getExtensions() {
         return this.extensions;
     }
 
@@ -238,8 +232,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return bool
      */
-    public  hasExtension(name: string)
-    {
+    public hasExtension(name: string) {
         return (name in this.extensions) || (name in this.extensionsByNs);
     }
 
@@ -296,8 +289,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
     //  *
     //  * @return this
     //  */
-    public  addObjectResource(resource: object)
-    {
+    public addObjectResource(resource: object) {
         // if (this.trackResources) {
         //     if (typeof(resource) === 'obejct') {
         //         resource = (resource);
@@ -337,7 +329,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @final
      */
-    public  getReflectionClass(serviceClass?: Function|string, _throw = true)//: ?ReflectionClass
+    public getReflectionClass(serviceClass?: Function | string, _throw = true)//: ?ReflectionClass
     {
         if (!(serviceClass = this.getParameterBag().resolveValue(serviceClass))) {
             return null;
@@ -429,8 +421,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      * @throws BadMethodCallException When this ContainerBuilder is compiled
      * @throws \LogicException        if the extension is not registered
      */
-    public  loadFromExtension(extension: string, values?: any[])
-    {
+    public loadFromExtension(extension: string, values?: any[]) {
         if (this.isCompiled()) {
             throw new RuntimeException('BadMethodCallException: Cannot load from an extension on a compiled container.');
         }
@@ -452,8 +443,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return this
      */
-    public  addCompilerPass(pass: CompilerPass, type = PassHookPoint.BEFORE_OPTIMIZATION, priority = 0): ContainerBuilder
-    {
+    public addCompilerPass(pass: CompilerPass, type = PassHookPoint.BEFORE_OPTIMIZATION, priority = 0): ContainerBuilder {
         this.getCompiler().addPass(pass, type, priority);
 
         // this.addObjectResource(pass);
@@ -466,8 +456,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return PassConfig
      */
-    public  getCompilerPassConfig()
-    {
+    public getCompilerPassConfig() {
         return this.getCompiler().getPassConfig();
     }
 
@@ -476,8 +465,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return Compiler
      */
-    public  getCompiler()
-    {
+    public getCompiler() {
         if (null == this.compiler) {
             this.compiler = new Compiler();
         }
@@ -490,8 +478,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @throws BadMethodCallException When this ContainerBuilder is compiled
      */
-    public  set(id: string,service?: object)
-    {
+    public set(id: string, service?: object) {
         if (this.isCompiled() && (id in (this.definitions) && !this.definitions[id].isSynthetic())) {
             // setting a synthetic service on a compiled container is alright
             throw new RuntimeException(`BadMethodCallException: Setting service "${id}" for an unknown or non-synthetic service definition on a compiled container is not allowed.`);
@@ -505,8 +492,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
     /**
      * Removes a service definition.
      */
-    public  removeDefinition(id: string)
-    {
+    public removeDefinition(id: string) {
         if ((id in this.definitions)) {
             delete (this.definitions[id]);
             (<any>this).removedIds[id] = true;
@@ -520,8 +506,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return bool
      */
-    public  has(id: string)
-    {
+    public has(id: string) {
         return (id in this.definitions) || (id in this.aliasDefinitions) || super.has(id);
     }
 
@@ -535,8 +520,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @see Reference
      */
-    public  get<T = any>(id: string, invalidBehavior = InvalidServiceBehavior.EXCEPTION_ON_INVALID_REFERENCE): T
-    {
+    public get<T = any>(id: string, invalidBehavior = InvalidServiceBehavior.EXCEPTION_ON_INVALID_REFERENCE): T {
 
         if (this.isCompiled() && (id in this.removedIds) /* ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE >= invalidBehavior */) {
             return super.get(id);
@@ -547,8 +531,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
 
 
 
-    private doGet<T = any>(id: string, invalidBehavior = InvalidServiceBehavior.EXCEPTION_ON_INVALID_REFERENCE, inlineServices: {[i: string]: any} = {},isConstructorArgument = false): T
-    {
+    private doGet<T = any>(id: string, invalidBehavior = InvalidServiceBehavior.EXCEPTION_ON_INVALID_REFERENCE, inlineServices: { [i: string]: any } = {}, isConstructorArgument = false): T {
         var definition: Definition;
         var service: any;
 
@@ -566,7 +549,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
             if (service = super.get(id, InvalidServiceBehavior.NULL_ON_INVALID_REFERENCE)) {
                 return service;
             }
-        } catch ( e) {
+        } catch (e) {
             //ServiceCircularReferenceException
             if (isConstructorArgument) {
                 throw e;
@@ -596,7 +579,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
         }
 
         var errors;
-        if (definition.hasErrors() && (errors = definition.getErrors()).length > 0 ) {
+        if (definition.hasErrors() && (errors = definition.getErrors()).length > 0) {
             throw new RuntimeException((errors.toString()));
         }
 
@@ -633,8 +616,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @throws BadMethodCallException When this ContainerBuilder is compiled
      */
-    public  merge(container: ContainerBuilder)
-    {
+    public merge(container: ContainerBuilder) {
         if (this.isCompiled()) {
             throw new RuntimeException('BadMethodCallException: Cannot merge on a compiled container.');
         }
@@ -646,11 +628,11 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
         if (this.trackResources) {
             throw new RuntimeException("Resources are not Supported")
             // for(const resource of container.getResources()) {
-                // this.addResource(resource);
+            // this.addResource(resource);
             // }
         }
 
-        for(const name in this.extensions) {
+        for (const name in this.extensions) {
             const extension = this.extensions[name];
 
             if (!(name in this.extensionConfigs)) {
@@ -663,18 +645,18 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
         var bag: ParameterBag<any>;
 
         if ((bag = this.getParameterBag()) instanceof EnvPlaceholderParameterBag && container.getParameterBag() instanceof EnvPlaceholderParameterBag) {
-            
+
             // throw new RuntimeException("EnV Parameter Bags are not Supported")
 
-            const containerBag = <EnvPlaceholderParameterBag<any>> bag;
-            
+            const containerBag = <EnvPlaceholderParameterBag<any>>bag;
+
             envPlaceholders = containerBag.getEnvPlaceholders();
             bag.mergeEnvPlaceholders(containerBag);
         } else {
             envPlaceholders = {};
         }
 
-        for(const env in container.envCounters) {
+        for (const env in container.envCounters) {
             const count = this.envCounters[env];
 
             if (!count && !(env in envPlaceholders)) {
@@ -688,8 +670,8 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
         }
 
         var enteries = container.getAutoconfiguredInstanceof();
-        for(const _interface in enteries) {
-            
+        for (const _interface in enteries) {
+
             const childDefinition = enteries[_interface];
 
             if ((_interface in this.autoconfiguredInstanceof)) {
@@ -701,7 +683,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
 
         var enteries = container.getAutoconfiguredAttributes();
 
-        for(const attribute in enteries) {
+        for (const attribute in enteries) {
 
             const configurator = enteries[attribute];
 
@@ -718,8 +700,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return array<array<string, mixed>>
      */
-    public  getExtensionConfig(name: string)
-    {
+    public getExtensionConfig(name: string) {
         if (!(name in this.extensionConfigs)) {
             this.extensionConfigs[name] = [];
         }
@@ -732,8 +713,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @param array<string, mixed> config
      */
-    public  prependExtensionConfig(name: string, config: {[i:string]: any})
-    {
+    public prependExtensionConfig(name: string, config: { [i: string]: any }) {
         if (!(name in this.extensionConfigs)) {
             this.extensionConfigs[name] = [];
         }
@@ -760,8 +740,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *                                     Set to "true" when you want to use the current ContainerBuilder
      *                                     directly, keep to "false" when the container is dumped instead.
      */
-    public  compile(resolveEnvPlaceholders = true)
-    {
+    public compile(resolveEnvPlaceholders = true) {
         var compiler = this.getCompiler();
 
         if (this.trackResources) {
@@ -779,7 +758,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
 
         compiler.compile(this);
 
-        for(const id in this.definitions) {
+        for (const id in this.definitions) {
             const definition = this.definitions[id];
 
             if (this.trackResources && definition.isLazy()) {
@@ -799,15 +778,15 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
 
         super.compile();
 
-        var defs= {...this.definitions,...this.aliasDefinitions};
+        var defs = { ...this.definitions, ...this.aliasDefinitions };
 
         // console.log('defs-all: ', defs);
 
-        for(const id in defs) {
+        for (const id in defs) {
             const definition = this.definitions[id];
 
 
-            if(!(definition instanceof Definition))
+            if (!(definition instanceof Definition))
                 continue;
 
             // console.log('def: ', definition);
@@ -821,26 +800,24 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
     /**
      * {@inheritdoc}
      */
-    public  getServiceIds()
-    {
-        
+    public getServiceIds() {
+
         var servicesIds = ['service_container']
-                                .concat(...Object.keys(this.getDefinitions()))
-                                .concat(...Object.keys(this.aliasDefinitions))
-                                .concat((super.getServiceIds()))
-                                ;
+            .concat(...Object.keys(this.getDefinitions()))
+            .concat(...Object.keys(this.aliasDefinitions))
+            .concat((super.getServiceIds()))
+            ;
         servicesIds = [... new Set(servicesIds)];
 
-        return servicesIds.map( servicesId => String(servicesId));
-     }
+        return servicesIds.map(servicesId => String(servicesId));
+    }
 
     /**
      * Gets removed service or alias ids.
      *
      * @return array<string, bool>
      */
-    public  getRemovedIds()
-    {
+    public getRemovedIds() {
         return this.removedIds;
     }
 
@@ -849,9 +826,8 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @param array<string, string|Alias> aliases
      */
-    public  addAliases(aliases: {[i:string]: string|Alias})
-    {
-        for(const alias in aliases) {
+    public addAliases(aliases: { [i: string]: string | Alias }) {
+        for (const alias in aliases) {
             const id = aliases[alias];
 
             this.setAlias(alias, id);
@@ -863,8 +839,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @param array<string, string|Alias> aliases
      */
-    public  setAliases(aliases: {[i:string]: string|Alias})
-    {
+    public setAliases(aliases: { [i: string]: string | Alias }) {
         this.aliasDefinitions = {};
         this.addAliases(aliases);
     }
@@ -880,8 +855,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      * @throws InvalidArgumentException if the id is not a string or an Alias
      * @throws InvalidArgumentException if the alias is for itself
      */
-    public  setAlias(alias: string, id: string|Alias)
-    {
+    public setAlias(alias: string, id: string | Alias) {
         // if ('' === alias || '\\' === alias[-1] || \strlen(alias) !== strcspn(alias, "\0\r\n'")) {
         //     throw new InvalidArgumentException(sprintf('Invalid alias id: "%s".', alias));
         // }
@@ -889,11 +863,11 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
         if ((typeof id === 'string')) {
             id = new Alias(id);
         } else
-        if (!(id instanceof Alias)) {
-            throw new InvalidArgumentException('id must be a string, or an Alias object.');
-        }
+            if (!(id instanceof Alias)) {
+                throw new InvalidArgumentException('id must be a string, or an Alias object.');
+            }
 
-        if (alias ===  String(id)) {
+        if (alias === String(id)) {
             throw new InvalidArgumentException(`An alias cannot reference itself, got a circular reference on "${alias}".`);
         }
 
@@ -903,10 +877,9 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
     }
 
 
-    public  removeAlias(alias: string)
-    {
+    public removeAlias(alias: string) {
         if (alias in this.aliasDefinitions) {
-            delete(this.aliasDefinitions[alias]);
+            delete (this.aliasDefinitions[alias]);
             this.removedIds[alias] = true;
         }
     }
@@ -914,16 +887,14 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
     /**
      * @return bool
      */
-    public  hasAlias(id: string)
-    {
+    public hasAlias(id: string) {
         return (id in this.aliasDefinitions);
     }
 
     /**
      * @return array<string, Alias>
      */
-    public  getAliases()
-    {
+    public getAliases() {
         return this.aliasDefinitions;
     }
 
@@ -932,8 +903,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @throws InvalidArgumentException if the alias does not exist
      */
-    public  getAlias(id: string)
-    {
+    public getAlias(id: string) {
         if (!(id in this.aliasDefinitions)) {
             throw new InvalidArgumentException((`The service alias "${id}" does not exist.`));
         }
@@ -941,18 +911,17 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
         return this.aliasDefinitions[id];
     }
 
-      /**
-     * Registers a service definition. alias for register
-     *
-     * This methods allows for simple registration of service definition
-     * with a fluid interface.
-     *
-     * @return Definition
-     */
-      public  bind<T>(id: string, serviceClass?: any)
-      {
+    /**
+   * Registers a service definition. alias for register
+   *
+   * This methods allows for simple registration of service definition
+   * with a fluid interface.
+   *
+   * @return Definition
+   */
+    public bind<T>(id: string, serviceClass?: any) {
         return this.register<T>(id, serviceClass);
-      }
+    }
 
     /**
      * Registers a service definition.
@@ -962,8 +931,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return Definition
      */
-    public  register<T>(id: string, serviceClass?: any)
-    {
+    public register<T>(id: string, serviceClass?: any) {
         return this.setDefinition(id, new Definition<T>(serviceClass));
     }
 
@@ -975,8 +943,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return Definition
      */
-    public  autowire(id: string, serviceClass?: any)
-    {
+    public autowire(id: string, serviceClass?: any) {
         return this.setDefinition(id, (new Definition(serviceClass)).setAutowired(true));
     }
 
@@ -985,9 +952,8 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @param array<string, Definition> definitions
      */
-    public  addDefinitions(definitions: {[i:string]: Definition})
-    {
-        for(const id in definitions) {
+    public addDefinitions(definitions: { [i: string]: Definition }) {
+        for (const id in definitions) {
             const definition = definitions[id];
             this.setDefinition(id, definition);
         }
@@ -998,8 +964,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @param array<string, Definition> definitions
      */
-    public  setDefinitions(definitions:  {[i:string]: Definition})
-    {
+    public setDefinitions(definitions: { [i: string]: Definition }) {
         this.definitions = {};
         this.addDefinitions(definitions);
     }
@@ -1009,8 +974,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return array<string, Definition>
      */
-    public  getDefinitions()
-    {
+    public getDefinitions() {
         return this.definitions;
     }
 
@@ -1021,8 +985,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @throws BadMethodCallException When this ContainerBuilder is compiled
      */
-    public  setDefinition(id: string, definition: Definition)
-    {
+    public setDefinition(id: string, definition: Definition) {
         if (this.isCompiled()) {
             throw new RuntimeException('BadMethodCallException: Adding definition to a compiled container is not allowed.');
         }
@@ -1041,8 +1004,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return bool
      */
-    public  hasDefinition(id: string)
-    {
+    public hasDefinition(id: string) {
         return (id in this.definitions);
     }
 
@@ -1053,8 +1015,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @throws ServiceNotFoundException if the service definition does not exist
      */
-    public  getDefinition(id: string)
-    {
+    public getDefinition(id: string) {
         if (!(id in this.definitions)) {
             throw new ServiceNotFoundException(id);
         }
@@ -1071,9 +1032,8 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @throws ServiceNotFoundException if the service definition does not exist
      */
-    public  findDefinition(id: string)
-    {
-        const seen:{[i:string]: any} = {};
+    public findDefinition(id: string) {
+        const seen: { [i: string]: any } = {};
         while ((id in this.aliasDefinitions)) {
             id = String(this.aliasDefinitions[id]);
 
@@ -1103,13 +1063,12 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      * @throws InvalidArgumentException When configure callable is not callable
      * @important
      */
-    private  createService(
-                definition: Definition,
-                inlineServices: {[i:string]: any},
-                isConstructorArgument = false,
-                id: string = null as any,
-                tryProxy = true)
-    {
+    private createService(
+        definition: Definition,
+        inlineServices: { [i: string]: any },
+        isConstructorArgument = false,
+        id: string = null as any,
+        tryProxy = true) {
 
         var factory: any;
         var service: any;
@@ -1132,7 +1091,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
         }
 
         if (tryProxy && definition.isLazy() && !(tryProxy = !(proxy = this.proxyInstantiator)) /*|| proxy instanceof RealServiceInstantiator*/) {
-           throw new RuntimeException("Ended up in a service proxy while creating");
+            throw new RuntimeException("Ended up in a service proxy while creating");
             // proxy = proxy.instantiateProxy(
             //     this,
             //     definition,
@@ -1164,7 +1123,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
                 //PAY MORE ATTENSION HERE
 
                 factory = [this.doResolveServices(parameterBag.resolveValue(factory[0]), inlineServices, isConstructorArgument), factory[1]];
-            
+
             }
             // else
             // if ((typeof factory !== 'string')) {
@@ -1178,14 +1137,14 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
             return this.services[id];
         }
 
-        if (null !== factory && undefined !== factory ) {
+        if (null !== factory && undefined !== factory) {
             // console.log('args: ', {...Object.assign({},args)});
             // console.log('base-args: ', definition.getArguments());
 
-            if(Array.isArray(args))
+            if (Array.isArray(args))
                 service = factory(...args);
-            else{
-                args = Object.assign({},args);
+            else {
+                args = Object.assign({}, args);
                 service = factory(args);
             }
 
@@ -1200,7 +1159,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
 
             // console.log('args: ', args);
 
-            service = Reflect.construct(<Function>definition.getClass(),args);
+            service = Reflect.construct(<Function>definition.getClass(), args);
 
             //Create a NEW INSTNACE HERE
 
@@ -1213,10 +1172,10 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
             // }
         }
 
-        var lastWitherIndex: number|string = null as any;
+        var lastWitherIndex: number | string = null as any;
         var methodsCalls = definition.getMethodCalls();
 
-        for( const k in methodsCalls) {
+        for (const k in methodsCalls) {
             const call = methodsCalls[k];
             if (call[2] ?? false) {
                 lastWitherIndex = k;
@@ -1229,15 +1188,24 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
         }
 
         const properties = this.doResolveServices(parameterBag.unescapeValue(parameterBag.resolveValue(definition.getProperties())), inlineServices);
-        
-        for(const name in properties) {
+
+        for (const name in properties) {
             const value = properties[name];
             service[name] = value;
         }
 
+
+        const activationHandlers = definition.activationListeners;
+
+        for (const handler of activationHandlers) {
+            handler({ container: this, service });
+        }
+
+
+
         methodsCalls = definition.getMethodCalls();
 
-        for( const k in methodsCalls) {
+        for (const k in methodsCalls) {
             const call = methodsCalls[k];
             service = this.callMethod(service, call, inlineServices);
 
@@ -1254,12 +1222,12 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
                 callable[0] = parameterBag.resolveValue(callable[0]);
 
                 if (callable[0] instanceof Reference) {
-                    callable[0] = this.doGet( String(callable[0]), callable[0].getInvalidBehavior(), inlineServices);
+                    callable[0] = this.doGet(String(callable[0]), callable[0].getInvalidBehavior(), inlineServices);
                 }
                 else
-                if (callable[0] instanceof Definition) {
-                    callable[0] = this.createService(callable[0], inlineServices);
-                }
+                    if (callable[0] instanceof Definition) {
+                        callable[0] = this.createService(callable[0], inlineServices);
+                    }
             }
 
             if (!(typeof callable == 'function')) {
@@ -1280,140 +1248,138 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      * @return mixed The same value with all service references replaced by
      *               the real service instances and all expressions evaluated
      */
-    public  resolveServices(value: any)
-    {
+    public resolveServices(value: any) {
         return this.doResolveServices(value);
     }
 
-    private  doResolveServices(value: any, inlineServices:{[i:string]: any} = {}, isConstructorArgument = false)
-    {
+    private doResolveServices(value: any, inlineServices: { [i: string]: any } = {}, isConstructorArgument = false) {
         // console.log('params: ', value);
-        
+
         const self = this;
         var reference: Reference;
 
         if (value && (typeof value == 'object' && (value.constructor === Object || value instanceof Array))) {
             // console.log('values: ', value);
             // return value;
-            var result: any = Array.isArray(value)? [] : {};
-            for(const k in value) {
+            var result: any = Array.isArray(value) ? [] : {};
+            for (const k in value) {
                 const v = value[k];
                 value[k] = this.doResolveServices(v, inlineServices, isConstructorArgument);
             }
         }
         else
-        if (value instanceof ServiceClosureArgument) {
-            reference = value.getValues()[0];
-            const self = this;
-            var _value: ServiceClosureArgument = value;
-            // value =  function(reference: Reference){
-            //     return self.resolveServices(reference);
-            // };
+            if (value instanceof ServiceClosureArgument) {
+                reference = value.getValues()[0];
+                const self = this;
+                var _value: ServiceClosureArgument = value;
+                // value =  function(reference: Reference){
+                //     return self.resolveServices(reference);
+                // };
 
-            // return (reference: Reference) => self.resolveServices(reference) 
-
-            
-
-            value = (...args: any[]) => {
-                const service = self.resolveServices(reference);
-                const methodName = _value.getMethod();
-
-                if(methodName){
-
-                if(!service[methodName] || !(('apply' in service[methodName]) || 'call' in service[methodName]))
-                    throw new TypeError(`Property "${methodName}" of service "${reference.getId()}", is not a valid callable`);
-
-                    return service[methodName](...args);
-                    // return service[methodName].call(service,...args);
-                }
+                // return (reference: Reference) => self.resolveServices(reference) 
 
 
-                if(!(('apply' in service) || 'call' in service))
-                    throw new TypeError(`Service ${reference.getId()} used as a callable service is not callable`);
 
-                return service(...args);
-            }
-        }
-        else
-        if (value instanceof IteratorArgument) {
-            value = new RewindableGenerator( function*(){
-                var values = value.getValues();
-                level_1: for( const k in values) {
-                    const v = values[k];
+                value = (...args: any[]) => {
+                    const service = self.resolveServices(reference);
+                    const methodName = _value.getMethod();
 
-                    for(const s of ContainerBuilder.getServiceConditionals(v)) {
-                        if (!self.has(s)) {
-                            continue level_1;
-                        }
-                    }
-                    for(const s of ContainerBuilder.getInitializedConditionals(v)) {
-                        if (!self.doGet(s, InvalidServiceBehavior.IGNORE_ON_UNINITIALIZED_REFERENCE, inlineServices)) {
-                            continue level_1;
-                        }
+                    if (methodName) {
+
+                        if (!service[methodName] || !(('apply' in service[methodName]) || 'call' in service[methodName]))
+                            throw new TypeError(`Property "${methodName}" of service "${reference.getId()}", is not a valid callable`);
+
+                        return service[methodName](...args);
+                        // return service[methodName].call(service,...args);
                     }
 
-                    yield {k : self.doResolveServices(v, inlineServices)};
-                    // yield k => this.doResolveServices(v, inlineServices);
-                }
-            },  function(value: any): number {
-                var count = 0;
-                var values = value.getValues();
-                level_1: for( const k in values) {
-                    const v = values[k];
 
-                    for(const s of ContainerBuilder.getServiceConditionals(v)) {
-                        if (!self.has(s)) {
-                            continue level_1;
-                        }
-                    }
-                    for(const s of ContainerBuilder.getInitializedConditionals(v)) {
-                        if (!self.doGet(s, InvalidServiceBehavior.IGNORE_ON_UNINITIALIZED_REFERENCE)) {
-                            continue level_1;
-                        }
-                    }
+                    if (!(('apply' in service) || 'call' in service))
+                        throw new TypeError(`Service ${reference.getId()} used as a callable service is not callable`);
 
-                    ++count;
-                }
-
-                return count;
-            });
-        } 
-        else
-        if (value instanceof ServiceLocatorArgument) {
-            var refs: {[i:string]: any} = [] ,types: any[] = [];
-            
-            var values = value.getValues();
-            for( const k in values) {
-                const v = values[k];
-
-                if (v) {
-                    refs[k] = [v];
-                    types[k] =( v instanceof TypedReference)? v.getType() : '?';
+                    return service(...args);
                 }
             }
-            // value = new ServiceLocator(\Closure::fromCallable([this, 'resolveServices']), refs, types);
-            throw new RuntimeException("Not Class: ServiceLocator");
-        }
-        else
-        if (value instanceof Reference) {
-            value = this.doGet(String(value), value.getInvalidBehavior(), inlineServices, isConstructorArgument);
-        }
-        else
-        if (value instanceof Definition) {
-            value = this.createService(value, inlineServices, isConstructorArgument);
-        }
-        else
-        if (value instanceof Parameter) {
-            value = this.getParameter( String(value));
-        }
-        // else
-        // if (value instanceof Expression) {
-        //     value = this.getExpressionLanguage().evaluate(value, ['container' : this]);
-        // }
-        else
-        if (value instanceof AbstractArgument) {
-            throw new RuntimeException(value.getTextWithContext());
-        }
+            else
+                if (value instanceof IteratorArgument) {
+                    value = new RewindableGenerator(function* () {
+                        var values = value.getValues();
+                        level_1: for (const k in values) {
+                            const v = values[k];
+
+                            for (const s of ContainerBuilder.getServiceConditionals(v)) {
+                                if (!self.has(s)) {
+                                    continue level_1;
+                                }
+                            }
+                            for (const s of ContainerBuilder.getInitializedConditionals(v)) {
+                                if (!self.doGet(s, InvalidServiceBehavior.IGNORE_ON_UNINITIALIZED_REFERENCE, inlineServices)) {
+                                    continue level_1;
+                                }
+                            }
+
+                            yield { k: self.doResolveServices(v, inlineServices) };
+                            // yield k => this.doResolveServices(v, inlineServices);
+                        }
+                    }, function (value: any): number {
+                        var count = 0;
+                        var values = value.getValues();
+                        level_1: for (const k in values) {
+                            const v = values[k];
+
+                            for (const s of ContainerBuilder.getServiceConditionals(v)) {
+                                if (!self.has(s)) {
+                                    continue level_1;
+                                }
+                            }
+                            for (const s of ContainerBuilder.getInitializedConditionals(v)) {
+                                if (!self.doGet(s, InvalidServiceBehavior.IGNORE_ON_UNINITIALIZED_REFERENCE)) {
+                                    continue level_1;
+                                }
+                            }
+
+                            ++count;
+                        }
+
+                        return count;
+                    });
+                }
+                else
+                    if (value instanceof ServiceLocatorArgument) {
+                        var refs: { [i: string]: any } = [], types: any[] = [];
+
+                        var values = value.getValues();
+                        for (const k in values) {
+                            const v = values[k];
+
+                            if (v) {
+                                refs[k] = [v];
+                                types[k] = (v instanceof TypedReference) ? v.getType() : '?';
+                            }
+                        }
+                        // value = new ServiceLocator(\Closure::fromCallable([this, 'resolveServices']), refs, types);
+                        throw new RuntimeException("Not Class: ServiceLocator");
+                    }
+                    else
+                        if (value instanceof Reference) {
+                            value = this.doGet(String(value), value.getInvalidBehavior(), inlineServices, isConstructorArgument);
+                        }
+                        else
+                            if (value instanceof Definition) {
+                                value = this.createService(value, inlineServices, isConstructorArgument);
+                            }
+                            else
+                                if (value instanceof Parameter) {
+                                    value = this.getParameter(String(value));
+                                }
+                                // else
+                                // if (value instanceof Expression) {
+                                //     value = this.getExpressionLanguage().evaluate(value, ['container' : this]);
+                                // }
+                                else
+                                    if (value instanceof AbstractArgument) {
+                                        throw new RuntimeException(value.getTextWithContext());
+                                    }
 
         return value;
     }
@@ -1434,13 +1400,12 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return array<string, array> An array of tags with the tagged service as key, holding a list of attribute arrays
      */
-    public  findTaggedServiceIds(name: string, throwOnAbstract = false)
-    {
+    public findTaggedServiceIds(name: string, throwOnAbstract = false) {
         this.usedTags.push(name);
-        const tags: {[i:string]: any} = [];
+        const tags: { [i: string]: any } = [];
 
         const definitions = this.getDefinitions();
-        for(const id in definitions) {
+        for (const id in definitions) {
             const definition = definitions[id];
 
             if (definition.hasTag(name)) {
@@ -1459,11 +1424,10 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return string[]
      */
-    public  findTags()
-    {
+    public findTags() {
         const tags: any[] = [];
         const definitions = this.getDefinitions();
-        for(const id in definitions) {
+        for (const id in definitions) {
             const definition = definitions[id];
 
             tags.push(...Array.from(Reflect.ownKeys(definition.getTags())));
@@ -1477,9 +1441,8 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return string[]
      */
-    public  findUnusedTags()
-    {
-        const unusedTags = this.findTags().filter( (tag: any,) => !this.usedTags.includes(tag));
+    public findUnusedTags() {
+        const unusedTags = this.findTags().filter((tag: any,) => !this.usedTags.includes(tag));
 
         return unusedTags;
 
@@ -1490,16 +1453,14 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      * 
      * @param provider ExpressionFunctionProviderInterface
      */
-    public  addExpressionLanguageProvider(provider: any)
-    {
+    public addExpressionLanguageProvider(provider: any) {
         // this.expressionLanguageProviders[] = provider;
     }
 
     /**
      * @return ExpressionFunctionProviderInterface[]
      */
-    public  getExpressionLanguageProviders()
-    {
+    public getExpressionLanguageProviders() {
         return this.expressionLanguageProviders;
     }
 
@@ -1508,8 +1469,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return ChildDefinition
      */
-    public  registerForAutoconfiguration(_interface: string)
-    {
+    public registerForAutoconfiguration(_interface: string) {
         if (!(_interface in this.autoconfiguredInstanceof)) {
             this.autoconfiguredInstanceof[_interface] = new ChildDefinition('');
         }
@@ -1530,8 +1490,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      * @param class-string<T>                                attributeClass
      * @param callable(ChildDefinition, T, \Reflector): void configurator
      */
-    public  registerAttributeForAutoconfiguration(attributeClass: string, configurator: () => any): void
-    {
+    public registerAttributeForAutoconfiguration(attributeClass: string, configurator: () => any): void {
         this.autoconfiguredAttributes[attributeClass] = configurator;
     }
 
@@ -1543,17 +1502,16 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      * "fooBar"-named arguments with type as type-hint. Such arguments will
      * receive the service id when autowiring is used.
      */
-    public  registerAliasForArgument(id: string, type: string, name: string = null as any): Alias
-    {
+    public registerAliasForArgument(id: string, type: string, name: string = null as any): Alias {
         // name = (new Target(name ?? id)).name;
 
-        name = name?? id;
+        name = name ?? id;
 
         if (!(/^[a-zA-Z_\x7f-\xff]/.test(name))) {
             throw new InvalidArgumentException(`Invalid argument name "${name}" for service "${id}": the first character must be a letter.`);
         }
 
-        return this.setAlias(type +' ' + name, id);
+        return this.setAlias(type + ' ' + name, id);
     }
 
     /**
@@ -1561,16 +1519,14 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return array<string, ChildDefinition>
      */
-    public  getAutoconfiguredInstanceof()
-    {
+    public getAutoconfiguredInstanceof() {
         return this.autoconfiguredInstanceof;
     }
 
     /**
      * @return array<string, callable>
      */
-    public  getAutoconfiguredAttributes(): {[i:string]: any}
-    {
+    public getAutoconfiguredAttributes(): { [i: string]: any } {
         return this.autoconfiguredAttributes;
     }
 
@@ -1585,15 +1541,14 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return mixed The value with env parameters resolved if a string or an array is passed
      */
-    public  resolveEnvPlaceholders(value: any, format: any = null, usedEnvs: any = null): any
-    {
+    public resolveEnvPlaceholders(value: any, format: any = null, usedEnvs: any = null): any {
         // throw new RuntimeException("resolveEnvPlaceholders not supported")
         if (null == format) {
             format = '%%env(%s)%%';
         }
 
         const bag = this.getParameterBag();
-        
+
         if (true === format) {
             value = bag.resolveValue(value);
         }
@@ -1602,11 +1557,11 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
             value = JSON.parse(JSON.stringify(value));
         }
 
-        if ((typeof value == 'object') && value.constructor == Object ) {
-            const result: {[i:string]: any} = {};
-            for(const k in value) {
+        if ((typeof value == 'object') && value.constructor == Object) {
+            const result: { [i: string]: any } = {};
+            for (const k in value) {
                 const v = value[k];
-                result[(typeof k == 'string')? this.resolveEnvPlaceholders(k, format, usedEnvs) : k] = this.resolveEnvPlaceholders(v, format, usedEnvs);
+                result[(typeof k == 'string') ? this.resolveEnvPlaceholders(k, format, usedEnvs) : k] = this.resolveEnvPlaceholders(v, format, usedEnvs);
             }
 
             return result;
@@ -1615,21 +1570,21 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
         if (!(typeof value == 'string') || 38 > value.length || !value.match('/env[_(]/i')) {
             return value;
         }
-        const envPlaceholders = (bag instanceof EnvPlaceholderParameterBag )? bag.getEnvPlaceholders() : this.envPlaceholders;
+        const envPlaceholders = (bag instanceof EnvPlaceholderParameterBag) ? bag.getEnvPlaceholders() : this.envPlaceholders;
 
         var completed = false;
         var resolved: any;
 
-        stage_1: for(const env in envPlaceholders) {
+        stage_1: for (const env in envPlaceholders) {
             const placeholders = envPlaceholders[env];
 
-            for(const placeholder of placeholders) {
+            for (const placeholder of placeholders) {
 
                 if (RegExp(`${placeholder}`).test(value)) {
                     if (true === format) {
                         resolved = bag.escapeValue(this.getEnv(env));
                     } else {
-                        resolved = format.replace('%s',env);
+                        resolved = format.replace('%s', env);
                     }
                     if (placeholder === value) {
                         value = resolved;
@@ -1658,8 +1613,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return int[] The number of time each env vars has been resolved
      */
-    public  getEnvCounters()
-    {
+    public getEnvCounters() {
         // const bag = this.getParameterBag();
         // const envPlaceholders = bag instanceof EnvPlaceholderParameterBag ? bag.getEnvPlaceholders() : this.envPlaceholders;
 
@@ -1675,8 +1629,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
     /**
      * @final
      */
-    public  log(pass: CompilerPass, message: string)
-    {
+    public log(pass: CompilerPass, message: string) {
         this.getCompiler().log(pass, this.resolveEnvPlaceholders(message));
     }
 
@@ -1686,8 +1639,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      * When parent packages are provided and if any of them is in dev-only mode,
      * the class will be considered available even if it is also in dev-only mode.
      */
-    public static  willBeAvailable(_package: string, serviceClass: any, parentPackages: string[]): boolean
-    {
+    public static willBeAvailable(_package: string, serviceClass: any, parentPackages: string[]): boolean {
         const skipDeprecation: any = 3 < arguments.length && arguments[3];
         const hasRuntimeApi = true;//class_exists(InstalledVersions::class);
 
@@ -1731,8 +1683,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @internal
      */
-    public  getRemovedBindingIds(): boolean[]
-    {
+    public getRemovedBindingIds(): boolean[] {
         return this.removedBindingIds;
     }
 
@@ -1741,16 +1692,15 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @internal
      */
-    public  removeBindings(id: string)
-    {
+    public removeBindings(id: string) {
         if (this.hasDefinition(id)) {
             const bindings = this.getDefinition(id).getBindings();
 
-            for(const k in bindings) {
+            for (const k in bindings) {
                 const binding = bindings[k];
 
                 const [, bindingId] = binding.getValues();
-                this.removedBindingIds[ Number(bindingId)] = true;
+                this.removedBindingIds[Number(bindingId)] = true;
             }
         }
     }
@@ -1764,21 +1714,20 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @internal
      */
-    public static  getServiceConditionals(value: any): any[]
-    {
+    public static getServiceConditionals(value: any): any[] {
         var services: any[] = [];
 
         if (Array.isArray(value)) {
-            for(const v of value) {
+            for (const v of value) {
                 services = services.concat(ContainerBuilder.getServiceConditionals(v));
                 services = [...new Set(services)];
 
             }
         }
         else
-        if (value instanceof Reference && InvalidServiceBehavior.IGNORE_ON_INVALID_REFERENCE === value.getInvalidBehavior()) {
-            services.push(String(value));
-        }
+            if (value instanceof Reference && InvalidServiceBehavior.IGNORE_ON_INVALID_REFERENCE === value.getInvalidBehavior()) {
+                services.push(String(value));
+            }
 
         return services;
     }
@@ -1792,20 +1741,19 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @internal
      */
-    public static  getInitializedConditionals(value: any): any[]
-    {
+    public static getInitializedConditionals(value: any): any[] {
         var services: any[] = [];
 
         if (Array.isArray(value)) {
-            for(const v of value) {
+            for (const v of value) {
                 services = services.concat(ContainerBuilder.getServiceConditionals(v));
                 services = [...new Set(services)];
             }
-        } 
-        else
-        if (value instanceof Reference && InvalidServiceBehavior.IGNORE_ON_UNINITIALIZED_REFERENCE === value.getInvalidBehavior()) {
-            services.push(String(value));
         }
+        else
+            if (value instanceof Reference && InvalidServiceBehavior.IGNORE_ON_UNINITIALIZED_REFERENCE === value.getInvalidBehavior()) {
+                services.push(String(value));
+            }
 
         return services;
     }
@@ -1817,8 +1765,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @return string
      */
-    public static  hash(value: any)
-    {
+    public static hash(value: any) {
         throw new RuntimeException("BadMethodCallException: Hash not implemented on containers");
         // hash = substr(base64_encode(hash('sha256', serialize(value), true)), 0, 7);
 
@@ -1828,8 +1775,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
     /**
      * {@inheritdoc}
      */
-    protected  getEnv(name: string)
-    {
+    protected getEnv(name: string) {
         var value = super.getEnv(name);
         const bag = this.getParameterBag();
 
@@ -1837,34 +1783,33 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
             return value;
         }
 
-    //     envPlaceholders = bag.getEnvPlaceholders();
-    //     if (isset(envPlaceholders[name][value])) {
-    //         bag = new ParameterBag(bag.all());
+        //     envPlaceholders = bag.getEnvPlaceholders();
+        //     if (isset(envPlaceholders[name][value])) {
+        //         bag = new ParameterBag(bag.all());
 
-    //         return bag.unescapeValue(bag.get("env(name)"));
-    //     }
-    //     foreach (envPlaceholders as env : placeholders) {
-    //         if (isset(placeholders[value])) {
-    //             return this.getEnv(env);
-    //         }
-    //     }
+        //         return bag.unescapeValue(bag.get("env(name)"));
+        //     }
+        //     foreach (envPlaceholders as env : placeholders) {
+        //         if (isset(placeholders[value])) {
+        //             return this.getEnv(env);
+        //         }
+        //     }
 
-    //     this.resolving["env(name)"] = true;
-    //     try {
-    //         return bag.unescapeValue(this.resolveEnvPlaceholders(bag.escapeValue(value), true));
-    //     } finally {
-    //         unset(this.resolving["env(name)"]);
-    //     }
+        //     this.resolving["env(name)"] = true;
+        //     try {
+        //         return bag.unescapeValue(this.resolveEnvPlaceholders(bag.escapeValue(value), true));
+        //     } finally {
+        //         unset(this.resolving["env(name)"]);
+        //     }
     }
 
-    private  callMethod(service: object, call: any[], inlineServices: any)
-    {
-        for(const s of ContainerBuilder.getServiceConditionals(call[1])) {
+    private callMethod(service: object, call: any[], inlineServices: any) {
+        for (const s of ContainerBuilder.getServiceConditionals(call[1])) {
             if (!this.has(s)) {
                 return service;
             }
         }
-        for(const s of ContainerBuilder.getInitializedConditionals(call[1])) {
+        for (const s of ContainerBuilder.getInitializedConditionals(call[1])) {
             if (!this.doGet(s, InvalidServiceBehavior.IGNORE_ON_UNINITIALIZED_REFERENCE, inlineServices)) {
                 return service;
             }
@@ -1880,17 +1825,16 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @param mixed service
      */
-    private  shareService(definition: Definition, service: object,id: string, inlineServices: any)
-    {
+    private shareService(definition: Definition, service: object, id: string, inlineServices: any) {
         // inlineServices[id ?? spl_object_hash(definition)] = service;
 
         if (null !== id && definition.isShared()) {
             this.services[id] = service;
-            delete(this.loading[id]);
+            delete (this.loading[id]);
         }
     }
 
-    private  getExpressionLanguage()//: ExpressionLanguage
+    private getExpressionLanguage()//: ExpressionLanguage
     {
         throw new RuntimeException("BadMethodCallException: getExpressionLanguage()");
         // if (null === this.expressionLanguage) {
@@ -1903,8 +1847,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
         // return this.expressionLanguage;
     }
 
-    private  inVendors(path: string): boolean
-    {
+    private inVendors(path: string): boolean {
         // if (null === this.vendors) {
         //     this.vendors = (new ComposerResource()).getVendors();
         // }

@@ -1,5 +1,6 @@
 import { BoundArgument } from './Argument/BoundArgument';
 import { InvalidArgumentException, InvalidServiceBehavior, RuntimeException } from './Container';
+import ContainerBuilder from './ContainerBuilder';
 import { Reference } from './Reference';
 
 export class Definition<T = any>
@@ -45,14 +46,33 @@ export class Definition<T = any>
     private changes: {[i: string]: boolean} = {};
     private bindings: BoundArgument[] = [];
     private errors: any[] = [];
+    private _activationListeners: ActivationHandler<T>[]  = [];
+    private _deactivationHandlers:DeactivationHandler<T>[] = [];
+
+
+    public get activationListeners(){
+        return this._activationListeners;
+    }
+
+    public get deactivationHandlers(){
+        return this._deactivationHandlers;
+    }
 
     private currenctArgumentKey = 0;
 
     public constructor(serviceClass: Function|string = null as any, args: any[] = []) {
-        if (null !== serviceClass) {
+        if (null !== serviceClass && undefined !== serviceClass) {
             this.setClass(serviceClass);
         }
         this.arguments = args;
+    }
+
+    public onActivated(handler: ActivationHandler<T>){
+        this._activationListeners.push(handler);
+    }
+
+    public onDeactivated(handler: DeactivationHandler<T>){
+        this._deactivationHandlers.push(handler);
     }
 
     /**
@@ -103,7 +123,17 @@ export class Definition<T = any>
          return this;
      }
      
+     /**
+      * alias for setFactory
+      */
      public withFactory(factory: ((...args: any[]) => any)|string|Array<Reference|string>|Reference|null){
+        return this.setFactory(factory);
+     }
+
+     /**
+      * alias for withFactory
+      */
+     public toFactory(factory: ((...args: any[]) => any)|string|Array<Reference|string>|Reference|null){
         return this.setFactory(factory);
      }
  
@@ -973,3 +1003,20 @@ export class Definition<T = any>
 
 
 export default Definition;
+
+
+
+
+export type ActivationHandler<T> = (input: ServiceActivationContext<T>) => void;
+export type DeactivationHandler<T> = (input: ServiceDeactivationContext<T>) => void;
+
+export interface ServiceActivationContext<T>{
+    container: ContainerBuilder;
+    service: T
+}
+
+
+export interface ServiceDeactivationContext<T>{
+    container: ContainerBuilder;
+    service: T
+}
