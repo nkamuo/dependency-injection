@@ -1015,11 +1015,10 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @throws ServiceNotFoundException if the service definition does not exist
      */
-    public getDefinition(id: string) {
+    public getDefinition<T = any>(id: string): Definition<T> {
         if (!(id in this.definitions)) {
             throw new ServiceNotFoundException(id);
         }
-
         return this.definitions[id];
     }
 
@@ -1032,7 +1031,7 @@ export class ContainerBuilder extends Container// implements TaggedContainerInte
      *
      * @throws ServiceNotFoundException if the service definition does not exist
      */
-    public findDefinition(id: string) {
+    public findDefinition<T = any>(id: string): Definition<T> {
         const seen: { [i: string]: any } = {};
         while ((id in this.aliasDefinitions)) {
             id = String(this.aliasDefinitions[id]);
